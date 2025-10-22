@@ -1,0 +1,46 @@
+{
+  "name": "vira-code",
+  "version": "1.0.0",
+  "description": "A modern, modular WordPress plugin for managing and executing code snippets safely",
+  "main": "resources/js/admin.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "watch": "vite build --watch",
+    "lint:js": "eslint resources/js/**/*.js",
+    "lint:css": "stylelint resources/css/**/*.css",
+    "format": "prettier --write \"resources/**/*.{js,css,scss}\""
+  },
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "code-snippets",
+    "php",
+    "javascript",
+    "css"
+  ],
+  "author": "Viraloka",
+  "license": "GPL-2.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/viracode/vira-code.git"
+  },
+  "bugs": {
+    "url": "https://github.com/viracode/vira-code/issues"
+  },
+  "homepage": "https://viraloka.com",
+  "devDependencies": {
+    "@wordpress/eslint-plugin": "^17.0.0",
+    "eslint": "^8.50.0",
+    "eslint-config-wordpress": "^2.0.0",
+    "prettier": "^3.0.0",
+    "stylelint": "^15.10.0",
+    "stylelint-config-wordpress": "^17.0.0",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

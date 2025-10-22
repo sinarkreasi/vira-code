@@ -1,0 +1,37 @@
+{
+    "name": "vira/vira-code",
+    "description": "A modern, modular WordPress plugin for managing and executing code snippets safely",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Viraloka",
+            "email": "hello@viraloka.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "ViraCode\\": "app/"
+        },
+        "files": [
+            "bootstrap/helpers.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "scripts": {
+        "phpcs": "phpcs --standard=WordPress app/",
+        "phpcbf": "phpcbf --standard=WordPress app/"
+    }
+}
