@@ -14,6 +14,8 @@ A modern, modular WordPress plugin for managing and executing code snippets safe
 
 **Vira Code** is a powerful code snippet manager for WordPress that allows you to create, manage, and execute PHP, JavaScript, CSS, and HTML snippets safely from your WordPress admin dashboard.
 
+<img src="https://github.com/sinarkreasi/vira-code/blob/main/resources/viracode.webp"></a>
+
 = Features =
 
 * **Multiple Snippet Types** - Support for PHP, JavaScript, CSS, and HTML snippets
