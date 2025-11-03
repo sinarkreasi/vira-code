@@ -9,6 +9,8 @@ namespace ViraCode\Http\Controllers;
 
 use ViraCode\Models\SnippetModel;
 use ViraCode\Services\SnippetExecutor;
+use ViraCode\Services\SnippetManagerService;
+use ViraCode\Services\LibraryFileStorageService;
 
 if (!defined("ABSPATH")) {
     exit();
@@ -22,11 +24,11 @@ if (!defined("ABSPATH")) {
 class AdminController
 {
     /**
-     * Snippet model instance.
+     * Snippet manager service instance.
      *
-     * @var SnippetModel
+     * @var SnippetManagerService
      */
-    protected $model;
+    protected $manager;
 
     /**
      * Snippet executor instance.
@@ -36,12 +38,20 @@ class AdminController
     protected $executor;
 
     /**
+     * Library file storage service instance.
+     *
+     * @var LibraryFileStorageService
+     */
+    protected $library_storage;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->model = new SnippetModel();
+        $this->manager = new SnippetManagerService();
         $this->executor = new SnippetExecutor();
+        $this->library_storage = new LibraryFileStorageService();
     }
 
     /**
@@ -62,7 +72,7 @@ class AdminController
         }
 
         // Get all snippets.
-        $snippets = $this->model->getAll();
+        $snippets = $this->manager->getAll();
 
         // Get conditional logic information for each snippet
         $conditional_logic_model = new \ViraCode\Models\ConditionalLogicModel();
@@ -76,10 +86,10 @@ class AdminController
 
         // Get statistics.
         $stats = [
-            "total" => $this->model->count(),
-            "active" => $this->model->count(["status" => "active"]),
-            "inactive" => $this->model->count(["status" => "inactive"]),
-            "error" => $this->model->count(["status" => "error"]),
+            "total" => $this->manager->count(),
+            "active" => $this->manager->count(["status" => "active"]),
+            "inactive" => $this->manager->count(["status" => "inactive"]),
+            "error" => $this->manager->count(["status" => "error"]),
             "conditional_logic" => count($conditional_logic_model->getSnippetsWithRules()),
         ];
 
@@ -112,7 +122,7 @@ class AdminController
         $snippet = null;
 
         if ($snippet_id > 0) {
-            $snippet = $this->model->getById($snippet_id);
+            $snippet = $this->manager->getById($snippet_id);
             if (!$snippet) {
                 wp_die(esc_html__("Snippet not found.", "vira-code"));
             }
@@ -221,14 +231,46 @@ class AdminController
      */
     protected function getLibrarySnippets()
     {
+        // Check if file-based library is available and has snippets.
+        if ( $this->library_storage->isAvailable() ) {
+            $file_snippets = $this->library_storage->getAllSnippets();
+            if ( ! empty( $file_snippets ) ) {
+                // Mark file-based snippets for UI indication
+                foreach ( $file_snippets as &$snippet ) {
+                    $snippet['source'] = 'file_storage';
+                    $snippet['is_migrated'] = true;
+                }
+                return apply_filters( 'vira_code/library_snippets', $file_snippets );
+            }
+        }
+
+        // Fallback to hardcoded snippets - DO NOT auto-migrate for safety
+        $hardcoded_snippets = $this->getHardcodedLibrarySnippets();
+        
+        // Mark hardcoded snippets for UI indication
+        foreach ( $hardcoded_snippets as &$snippet ) {
+            $snippet['source'] = 'hardcoded';
+            $snippet['is_migrated'] = false;
+            $snippet['migration_available'] = $this->library_storage->isAvailable();
+        }
+
+        // Return hardcoded snippets with migration info
+        return apply_filters( 'vira_code/library_snippets', $hardcoded_snippets );
+    }
+
+    /**
+     * Get hardcoded library snippets (fallback).
+     *
+     * @return array
+     */
+    public function getHardcodedLibrarySnippets()
+    {
         $snippets = [
             [
                 "id" => "wc-hide-shipping-when-free",
-                "title" =>
-                    "Hide Other Shipping Methods When Free Shipping Available",
-                "description" =>
-                    "Automatically hide all other shipping methods when free shipping is available in WooCommerce cart.",
-                "category" => "WooCommerce",
+                "title" => "Hide Other Shipping Methods When Free Shipping Available",
+                "description" => "Automatically hide all other shipping methods when free shipping is available in WooCommerce cart.",
+                "category" => "Shipping",
                 "type" => "php",
                 "scope" => "frontend",
                 "code" => "// Hide shipping rates when free shipping is available
@@ -248,9 +290,8 @@ add_filter('woocommerce_package_rates', function(\$rates) {
             [
                 "id" => "wc-custom-add-to-cart-text",
                 "title" => "Change Add to Cart Button Text",
-                "description" =>
-                    'Customize the "Add to Cart" button text for different product types in WooCommerce.',
-                "category" => "WooCommerce",
+                "description" => 'Customize the "Add to Cart" button text for different product types in WooCommerce.',
+                "category" => "Product",
                 "type" => "php",
                 "scope" => "frontend",
                 "code" => "// Change Add to Cart button text
@@ -271,9 +312,8 @@ add_filter('woocommerce_product_add_to_cart_text', function(\$text) {
             [
                 "id" => "wc-remove-product-tabs",
                 "title" => "Remove Product Tabs",
-                "description" =>
-                    "Remove specific tabs from WooCommerce product pages like reviews, description, or additional information.",
-                "category" => "WooCommerce",
+                "description" => "Remove specific tabs from WooCommerce product pages like reviews, description, or additional information.",
+                "category" => "Product",
                 "type" => "php",
                 "scope" => "frontend",
                 "code" => "// Remove product tabs
@@ -295,9 +335,8 @@ add_filter('woocommerce_product_tabs', function(\$tabs) {
             [
                 "id" => "wc-minimum-order-amount",
                 "title" => "Set Minimum Order Amount",
-                "description" =>
-                    "Set a minimum order amount required before customers can checkout in WooCommerce.",
-                "category" => "WooCommerce",
+                "description" => "Set a minimum order amount required before customers can checkout in WooCommerce.",
+                "category" => "Checkout",
                 "type" => "php",
                 "scope" => "frontend",
                 "code" => "// Set minimum order amount
@@ -322,9 +361,8 @@ add_action('woocommerce_checkout_process', function() {
             [
                 "id" => "wc-custom-checkout-fields",
                 "title" => "Add Custom Checkout Field",
-                "description" =>
-                    "Add a custom field to the WooCommerce checkout page and save it with the order.",
-                "category" => "WooCommerce",
+                "description" => "Add a custom field to the WooCommerce checkout page and save it with the order.",
+                "category" => "Checkout",
                 "type" => "php",
                 "scope" => "frontend",
                 "code" => "// Add custom checkout field
@@ -350,9 +388,101 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
                 "tags" => "checkout, fields, custom, woocommerce",
                 "icon" => "dashicons-feedback",
             ],
+            [
+                "id" => "wc-change-empty-cart-message",
+                "title" => "Change Empty Cart Message",
+                "description" => "Customize the message displayed when the WooCommerce cart is empty.",
+                "category" => "Cart",
+                "type" => "php",
+                "scope" => "frontend",
+                "code" => "// Change empty cart message
+add_filter('wc_empty_cart_message', function(\$message) {
+    return __('Your cart is currently empty. Start shopping now!', 'woocommerce');
+});",
+                "tags" => "cart, message, empty, woocommerce",
+                "icon" => "dashicons-cart",
+            ],
+            [
+                "id" => "wc-free-shipping-progress-bar",
+                "title" => "Free Shipping Progress Bar",
+                "description" => "Display a progress bar showing how much more customers need to spend for free shipping.",
+                "category" => "Cart",
+                "type" => "php",
+                "scope" => "frontend",
+                "code" => "// Free shipping progress bar
+add_action('woocommerce_before_cart_table', function() {
+    \$free_shipping_threshold = 100; // Set your free shipping amount
+    \$cart_total = WC()->cart->subtotal;
+    
+    if (\$cart_total < \$free_shipping_threshold) {
+        \$remaining = \$free_shipping_threshold - \$cart_total;
+        \$percentage = (\$cart_total / \$free_shipping_threshold) * 100;
+        
+        echo '<div class=\"free-shipping-progress\">';
+        echo '<p>Add ' . wc_price(\$remaining) . ' more for free shipping!</p>';
+        echo '<div class=\"progress-bar\"><div class=\"progress\" style=\"width: ' . \$percentage . '%\"></div></div>';
+        echo '</div>';
+    } else {
+        echo '<div class=\"free-shipping-achieved\"><p>🎉 You qualify for free shipping!</p></div>';
+    }
+});",
+                "tags" => "shipping, progress, cart, woocommerce",
+                "icon" => "dashicons-chart-line",
+            ],
+            [
+                "id" => "wc-display-discount-badge",
+                "title" => "Display Discount Badge on Sale Products",
+                "description" => "Show a discount percentage badge on sale products in WooCommerce.",
+                "category" => "Pricing",
+                "type" => "php",
+                "scope" => "frontend",
+                "code" => "// Display discount badge
+add_action('woocommerce_before_shop_loop_item_title', function() {
+    global \$product;
+    
+    if (\$product->is_on_sale()) {
+        \$regular_price = \$product->get_regular_price();
+        \$sale_price = \$product->get_sale_price();
+        
+        if (\$regular_price && \$sale_price) {
+            \$discount = round(((\$regular_price - \$sale_price) / \$regular_price) * 100);
+            echo '<span class=\"discount-badge\">-' . \$discount . '%</span>';
+        }
+    }
+}, 15);",
+                "tags" => "discount, badge, sale, pricing, woocommerce",
+                "icon" => "dashicons-tag",
+            ],
+            [
+                "id" => "wc-hide-price-for-guest",
+                "title" => "Hide Prices for Guest Users",
+                "description" => "Hide product prices and add to cart buttons for non-logged-in users in WooCommerce.",
+                "category" => "Pricing",
+                "type" => "php",
+                "scope" => "frontend",
+                "code" => "// Hide prices for guests
+add_action('init', function() {
+    if (!is_user_logged_in()) {
+        // Remove price display
+        remove_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10);
+        remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
+        
+        // Remove add to cart buttons
+        remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
+        remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
+        
+        // Add login message
+        add_action('woocommerce_single_product_summary', function() {
+            echo '<p class=\"login-to-see-price\">Please <a href=\"' . wp_login_url(get_permalink()) . '\">login</a> to see prices.</p>';
+        }, 25);
+    }
+});",
+                "tags" => "pricing, guest, login, woocommerce",
+                "icon" => "dashicons-lock",
+            ],
         ];
 
-        return apply_filters("vira_code/library_snippets", $snippets);
+        return $snippets;
     }
 
     /**
@@ -526,7 +656,7 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
         // Save snippet.
         if ($snippet_id > 0) {
             // Update existing snippet.
-            $result = $this->model->update($snippet_id, $data);
+            $result = $this->manager->update($snippet_id, $data);
             if ($result) {
                 // Save conditional logic rules
                 $this->saveConditionalLogicRules($snippet_id, $parsed_rules);
@@ -545,7 +675,7 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
             }
         } else {
             // Create new snippet.
-            $result = $this->model->create($data);
+            $result = $this->manager->create($data);
             if ($result) {
                 // Save conditional logic rules
                 $this->saveConditionalLogicRules($result, $parsed_rules);
@@ -592,7 +722,7 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
         }
 
         // Delete snippet.
-        $result = $this->model->delete($snippet_id);
+        $result = $this->manager->delete($snippet_id);
 
         if ($result) {
             wp_send_json_success([
@@ -632,10 +762,10 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
         }
 
         // Toggle status.
-        $result = $this->model->toggleStatus($snippet_id);
+        $result = $this->manager->toggleStatus($snippet_id);
 
         if ($result) {
-            $snippet = $this->model->getById($snippet_id);
+            $snippet = $this->manager->getById($snippet_id);
             wp_send_json_success([
                 "message" => __("Snippet status updated!", "vira-code"),
                 "status" => $snippet["status"],
@@ -669,10 +799,10 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
 
         // Get statistics.
         $stats = [
-            "total" => $this->model->count(),
-            "active" => $this->model->count(["status" => "active"]),
-            "inactive" => $this->model->count(["status" => "inactive"]),
-            "error" => $this->model->count(["status" => "error"]),
+            "total" => $this->manager->count(),
+            "active" => $this->manager->count(["status" => "active"]),
+            "inactive" => $this->manager->count(["status" => "inactive"]),
+            "error" => $this->manager->count(["status" => "error"]),
         ];
 
         wp_send_json_success([
@@ -856,7 +986,7 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
         $export_data = [];
 
         foreach ($snippet_ids as $snippet_id) {
-            $snippet = $this->model->getById($snippet_id);
+            $snippet = $this->manager->getById($snippet_id);
             $rules = $conditional_logic_model->getRules($snippet_id);
             
             if ($snippet && !empty($rules)) {
@@ -919,7 +1049,7 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
 
         // Handle single rule import to specific snippet
         if ($target_snippet_id > 0) {
-            $snippet = $this->model->getById($target_snippet_id);
+            $snippet = $this->manager->getById($target_snippet_id);
             if (!$snippet) {
                 wp_send_json_error([
                     "message" => __("Target snippet not found.", "vira-code"),
@@ -951,7 +1081,7 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
                 }
 
                 // Try to find existing snippet by title
-                $existing_snippets = $this->model->getAll();
+                $existing_snippets = $this->manager->getAll();
                 $existing_snippet = null;
                 
                 foreach ($existing_snippets as $snippet) {
@@ -976,7 +1106,7 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
                         'status' => 'inactive'
                     ];
                     
-                    $new_snippet_id = $this->model->create($new_snippet_data);
+                    $new_snippet_id = $this->manager->create($new_snippet_data);
                     if ($new_snippet_id) {
                         $conditional_logic_model->saveRules($new_snippet_id, $item['rules']);
                         $imported_count++;
@@ -1219,7 +1349,7 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
             }
 
             // Check if snippet exists.
-            $snippet = $this->model->getById($snippet_id);
+            $snippet = $this->manager->getById($snippet_id);
             if (!$snippet) {
                 wp_send_json_error([
                     "message" => __("Snippet not found.", "vira-code"),
@@ -1259,5 +1389,115 @@ add_action('woocommerce_checkout_update_order_meta', function(\$order_id) {
                 "errors" => [$e->getMessage()],
             ]);
         }
+    }
+
+    /**
+     * Migrate library to file storage via AJAX.
+     *
+     * @return void
+     */
+    public function migrateLibraryToFiles()
+    {
+        // Verify nonce.
+        check_ajax_referer(\ViraCode\vira_code_nonce_action(), "nonce");
+
+        // Check user capability.
+        if (!\ViraCode\vira_code_user_can_manage()) {
+            wp_send_json_error([
+                "message" => __("Permission denied.", "vira-code"),
+            ]);
+        }
+
+        if (!$this->library_storage->isAvailable()) {
+            wp_send_json_error([
+                "message" => __("File storage is not available. Check directory permissions.", "vira-code"),
+            ]);
+        }
+
+        // Get hardcoded snippets.
+        $hardcoded_snippets = $this->getHardcodedLibrarySnippets();
+
+        // Migrate to file storage.
+        $result = $this->library_storage->migrateHardcodedSnippets($hardcoded_snippets);
+
+        if ($result) {
+            $stats = $this->library_storage->getStats();
+            wp_send_json_success([
+                "message" => sprintf(
+                    __("Successfully migrated %d library snippets to file storage across %d categories.", "vira-code"),
+                    $stats['total_snippets'],
+                    $stats['categories']
+                ),
+                "stats" => $stats,
+            ]);
+        } else {
+            wp_send_json_error([
+                "message" => __("Failed to migrate library snippets to file storage.", "vira-code"),
+            ]);
+        }
+    }
+
+    /**
+     * Get library statistics via AJAX.
+     *
+     * @return void
+     */
+    public function getLibraryStats()
+    {
+        // Verify nonce.
+        check_ajax_referer(\ViraCode\vira_code_nonce_action(), "nonce");
+
+        // Check user capability.
+        if (!\ViraCode\vira_code_user_can_manage()) {
+            wp_send_json_error([
+                "message" => __("Permission denied.", "vira-code"),
+            ]);
+        }
+
+        $stats = $this->library_storage->getStats();
+        $hardcoded_count = count($this->getHardcodedLibrarySnippets());
+
+        wp_send_json_success([
+            "file_storage" => $stats,
+            "hardcoded_count" => $hardcoded_count,
+            "migration_available" => $stats['storage_available'] && $hardcoded_count > 0,
+        ]);
+    }
+
+    /**
+     * Get library cleanup information.
+     *
+     * @return void
+     */
+    public function getLibraryCleanupInfo()
+    {
+        // Check user capability.
+        if (!\ViraCode\vira_code_user_can_manage()) {
+            wp_send_json_error([
+                "message" => __("Permission denied.", "vira-code"),
+            ]);
+        }
+
+        // Verify nonce.
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', \ViraCode\vira_code_nonce_action())) {
+            wp_send_json_error([
+                "message" => __("Security check failed.", "vira-code"),
+            ]);
+        }
+
+        $cleanup_service = new \ViraCode\Services\LibraryCleanupService();
+        
+        // Get cleanup status and recommendations.
+        $cleanup_check = $cleanup_service->canCleanup();
+        $recommendations = $cleanup_service->getRecommendations();
+        $instructions = $cleanup_service->getCleanupInstructions();
+        $validation = $cleanup_service->validateFileStorage();
+
+        wp_send_json_success([
+            "cleanup_check" => $cleanup_check,
+            "recommendations" => $recommendations,
+            "instructions" => $instructions,
+            "validation" => $validation,
+        ]);
     }
 }

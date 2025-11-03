@@ -3,14 +3,15 @@
  * Plugin Name: Vira Code
  * Plugin URI: https://viraloka.com/pro/vira-code
  * Description: Lightweight code snippet manager for PHP, JS, CSS & HTML. Fast setup, clean UI, instant productivity.
- * Version: 1.0.0
+ * Version: 1.0.5
  * Author: Viraloka
  * Author URI: https://viraloka.com
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: vira-code
  * Domain Path: /resources/lang
- * Requires at least: 6.0
+ * Requires at least: 6.8
+ * Tested up to: 6.8
  * Requires PHP: 8.2
  *
  * @package ViraCode
@@ -24,7 +25,7 @@ if (!defined("ABSPATH")) {
 }
 
 // Define plugin constants.
-define("VIRA_CODE_VERSION", "1.0.0");
+define("VIRA_CODE_VERSION", "1.0.5");
 define("VIRA_CODE_FILE", __FILE__);
 define("VIRA_CODE_PATH", plugin_dir_path(__FILE__));
 define("VIRA_CODE_URL", plugin_dir_url(__FILE__));
@@ -86,6 +87,8 @@ register_activation_hook(__FILE__, function () {
     // Set default options.
     add_option("vira_code_version", VIRA_CODE_VERSION);
     add_option("vira_code_safe_mode", 0);
+    add_option("vira_code_storage_mode", "database");
+    add_option("vira_code_log_limit", 100);
 
     // Initialize conditional logic service provider during activation.
     do_action('vira_code/conditional_logic_activation');

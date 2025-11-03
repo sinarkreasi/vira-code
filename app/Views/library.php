@@ -27,6 +27,57 @@ if (!defined("ABSPATH")) {
        "vira-code",
    ); ?>
 		</p>
+
+		<?php
+  // Check if using file-based library
+  $library_storage = new \ViraCode\Services\LibraryFileStorageService();
+  $using_file_storage =
+      $library_storage->isAvailable() &&
+      !empty($library_storage->getAllSnippets());
+  $has_hardcoded = !empty($snippets) && isset($snippets[0]['source']) && $snippets[0]['source'] === 'hardcoded';
+  ?>
+
+		<div class="vira-library-status">
+			<?php if ($using_file_storage): ?>
+				<div class="notice notice-success inline">
+					<p>
+						<span class="dashicons dashicons-yes-alt"></span>
+						<?php esc_html_e(
+          "Library is using optimized file-based storage.",
+          "vira-code",
+      ); ?>
+						<button type="button" class="button button-small" id="vira-library-stats-btn">
+							<?php esc_html_e("View Stats", "vira-code"); ?>
+						</button>
+					</p>
+				</div>
+			<?php elseif ($has_hardcoded): ?>
+				<div class="notice notice-warning inline">
+					<p>
+						<span class="dashicons dashicons-warning"></span>
+						<?php esc_html_e("Library is using legacy hardcoded storage.", "vira-code"); ?>
+						<?php if ($library_storage->isAvailable()): ?>
+							<button type="button" class="button button-primary button-small" id="vira-migrate-library-btn">
+								<?php esc_html_e("Migrate to File Storage", "vira-code"); ?>
+							</button>
+							<span class="description"><?php esc_html_e("(Recommended for better performance)", "vira-code"); ?></span>
+						<?php else: ?>
+							<span class="description"><?php esc_html_e(
+           "File storage not available - check directory permissions.",
+           "vira-code",
+       ); ?></span>
+						<?php endif; ?>
+					</p>
+				</div>
+			<?php else: ?>
+				<div class="notice notice-info inline">
+					<p>
+						<span class="dashicons dashicons-info"></span>
+						<?php esc_html_e("No library snippets available.", "vira-code"); ?>
+					</p>
+				</div>
+			<?php endif; ?>
+		</div>
 	</div>
 
 	<?php if (empty($snippets)): ?>
@@ -76,9 +127,10 @@ if (!defined("ABSPATH")) {
 		<!-- Snippets Grid -->
 		<div class="vira-library-grid">
 			<?php foreach ($snippets as $snippet): ?>
-				<div class="vira-library-card" data-category="<?php echo esc_attr(
-        strtolower($snippet["category"]),
-    ); ?>" data-tags="<?php echo esc_attr(strtolower($snippet["tags"])); ?>">
+				<div class="vira-library-card" 
+					 data-category="<?php echo esc_attr(strtolower($snippet["category"])); ?>" 
+					 data-tags="<?php echo esc_attr(strtolower(is_array($snippet["tags"]) ? implode(", ", $snippet["tags"]) : $snippet["tags"])); ?>"
+					 data-source="<?php echo esc_attr($snippet['source'] ?? 'unknown'); ?>">
 					<div class="vira-card-header">
 						<div class="vira-card-icon">
 							<span class="dashicons <?php echo esc_attr($snippet["icon"]); ?>"></span>
@@ -96,7 +148,9 @@ if (!defined("ABSPATH")) {
 					</div>
 
 					<div class="vira-card-body">
-						<h3 class="vira-card-title"><?php echo esc_html($snippet["title"]); ?></h3>
+						<h3 class="vira-card-title"><?php echo esc_html(
+          $snippet["title"] ?? $snippet["name"],
+      ); ?></h3>
 						<p class="vira-card-description"><?php echo esc_html(
           $snippet["description"],
       ); ?></p>
@@ -104,7 +158,9 @@ if (!defined("ABSPATH")) {
 						<?php if (!empty($snippet["tags"])): ?>
 							<div class="vira-card-tags">
 								<?php
-        $tags = explode(",", $snippet["tags"]);
+        $tags = is_array($snippet["tags"])
+            ? $snippet["tags"]
+            : explode(",", $snippet["tags"]);
         foreach ($tags as $tag):
             $tag = trim($tag); ?>
 									<span class="vira-tag"><?php echo esc_html($tag); ?></span>
@@ -113,19 +169,31 @@ if (!defined("ABSPATH")) {
         ?>
 							</div>
 						<?php endif; ?>
+						
+						<?php if (isset($snippet['source'])): ?>
+							<div class="vira-storage-type-indicator vira-storage-type-<?php echo esc_attr($snippet['source']); ?>">
+								<?php if ($snippet['source'] === 'file_storage'): ?>
+									<span class="dashicons dashicons-media-document"></span>
+									<?php esc_html_e('File Storage', 'vira-code'); ?>
+								<?php else: ?>
+									<span class="dashicons dashicons-database"></span>
+									<?php esc_html_e('Legacy Code', 'vira-code'); ?>
+								<?php endif; ?>
+							</div>
+						<?php endif; ?>
 					</div>
 
 					<div class="vira-card-footer">
 						<button type="button"
 							class="button button-secondary vira-view-snippet-btn"
-							data-snippet-id="<?php echo esc_attr($snippet["id"]); ?>"
+							data-snippet-id="<?php echo esc_attr($snippet["id"] ?? $snippet["slug"]); ?>"
 							data-snippet='<?php echo esc_attr(wp_json_encode($snippet)); ?>'>
 							<span class="dashicons dashicons-visibility"></span>
 							<?php esc_html_e("View Code", "vira-code"); ?>
 						</button>
 						<button type="button"
 							class="button button-primary vira-use-snippet-btn"
-							data-snippet-id="<?php echo esc_attr($snippet["id"]); ?>"
+							data-snippet-id="<?php echo esc_attr($snippet["id"] ?? $snippet["slug"]); ?>"
 							data-snippet='<?php echo esc_attr(wp_json_encode($snippet)); ?>'>
 							<span class="dashicons dashicons-plus-alt"></span>
 							<?php esc_html_e("Use Snippet", "vira-code"); ?>
@@ -190,3 +258,202 @@ if (!defined("ABSPATH")) {
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	const ajaxUrl = "<?php echo esc_url(admin_url("admin-ajax.php")); ?>";
+	const viraNonce = "<?php echo esc_js(
+     wp_create_nonce(\ViraCode\vira_code_nonce_action()),
+ ); ?>";
+
+	// Library migration
+	$('#vira-migrate-library-btn').on('click', function() {
+		const button = $(this);
+		const originalText = button.text();
+
+		if (!confirm('<?php esc_html_e(
+      "Are you sure you want to migrate the library to file storage? This will create files in wp-content/vira-cache/library/",
+      "vira-code",
+  ); ?>')) {
+			return;
+		}
+
+		button.prop('disabled', true).text('<?php esc_html_e(
+      "Migrating...",
+      "vira-code",
+  ); ?>');
+
+		$.ajax({
+			url: ajaxUrl,
+			type: 'POST',
+			data: {
+				action: 'vira_code_migrate_library_to_files',
+				nonce: viraNonce
+			},
+			success: function(response) {
+				if (response.success) {
+					// Show success message
+					const notice = $('<div class="notice notice-success is-dismissible"><p>' + response.data.message + '</p></div>');
+					$('.vira-library-intro').prepend(notice);
+
+					// Reload page after 2 seconds
+					setTimeout(function() {
+						location.reload();
+					}, 2000);
+				} else {
+					button.prop('disabled', false).text(originalText);
+					alert(response.data.message || '<?php esc_html_e(
+         "Migration failed.",
+         "vira-code",
+     ); ?>');
+				}
+			},
+			error: function() {
+				button.prop('disabled', false).text(originalText);
+				alert('<?php esc_html_e(
+        "An error occurred during migration.",
+        "vira-code",
+    ); ?>');
+			}
+		});
+	});
+
+	// Library stats
+	$('#vira-library-stats-btn').on('click', function() {
+		$.ajax({
+			url: ajaxUrl,
+			type: 'POST',
+			data: {
+				action: 'vira_code_get_library_stats',
+				nonce: viraNonce
+			},
+			success: function(response) {
+				if (response.success) {
+					const stats = response.data.file_storage;
+					let message = '<?php esc_html_e("Library Statistics:", "vira-code"); ?>\n\n';
+					message += '<?php esc_html_e(
+         "Total Snippets:",
+         "vira-code",
+     ); ?> ' + stats.total_snippets + '\n';
+					message += '<?php esc_html_e(
+         "Categories:",
+         "vira-code",
+     ); ?> ' + stats.categories + '\n';
+					message += '<?php esc_html_e(
+         "Storage Directory:",
+         "vira-code",
+     ); ?> ' + stats.woocommerce_directory;
+
+					alert(message);
+				} else {
+					alert(response.data.message || '<?php esc_html_e(
+         "Failed to get library stats.",
+         "vira-code",
+     ); ?>');
+				}
+			},
+			error: function() {
+				alert('<?php esc_html_e(
+        "An error occurred while getting stats.",
+        "vira-code",
+    ); ?>');
+			}
+		});
+	});
+
+	// Existing library functionality...
+	// Filter functionality
+	$('#vira-filter-category, #vira-filter-search').on('change input', function() {
+		filterSnippets();
+	});
+
+	function filterSnippets() {
+		const categoryFilter = $('#vira-filter-category').val().toLowerCase();
+		const searchFilter = $('#vira-filter-search').val().toLowerCase();
+
+		$('.vira-library-card').each(function() {
+			const card = $(this);
+			const category = card.data('category');
+			const tags = card.data('tags');
+			const title = card.find('.vira-card-title').text().toLowerCase();
+			const description = card.find('.vira-card-description').text().toLowerCase();
+
+			let show = true;
+
+			// Category filter
+			if (categoryFilter && category !== categoryFilter) {
+				show = false;
+			}
+
+			// Search filter
+			if (searchFilter &&
+				!title.includes(searchFilter) &&
+				!description.includes(searchFilter) &&
+				!tags.includes(searchFilter)) {
+				show = false;
+			}
+
+			card.toggle(show);
+		});
+	}
+
+	// View snippet modal
+	$('.vira-view-snippet-btn').on('click', function() {
+		const snippet = JSON.parse($(this).attr('data-snippet'));
+		showSnippetModal(snippet);
+	});
+
+	// Use snippet button
+	$('.vira-use-snippet-btn, .vira-modal-use-btn').on('click', function() {
+		const snippet = JSON.parse($(this).attr('data-snippet') || $('.vira-modal-use-btn').attr('data-snippet'));
+		useSnippet(snippet);
+	});
+
+	// Modal functionality
+	function showSnippetModal(snippet) {
+		$('#vira-modal-title').text(snippet.title || snippet.name);
+		$('#vira-modal-description').text(snippet.description);
+		$('#vira-modal-type').text(snippet.type.toUpperCase());
+		$('#vira-modal-scope').text(snippet.scope);
+		$('#vira-modal-category').text(snippet.category);
+		$('#vira-modal-code').text(snippet.code);
+		$('.vira-modal-use-btn').attr('data-snippet', JSON.stringify(snippet));
+		$('#vira-snippet-modal').show();
+	}
+
+	// Close modal
+	$('.vira-modal-close, .vira-modal-close-btn, .vira-modal-overlay').on('click', function() {
+		$('#vira-snippet-modal').hide();
+	});
+
+	// Copy code functionality
+	$('.vira-copy-code-btn').on('click', function() {
+		const code = $('#vira-modal-code').text();
+		navigator.clipboard.writeText(code).then(function() {
+			const button = $('.vira-copy-code-btn');
+			const originalText = button.text();
+			button.text('<?php esc_html_e("Copied!", "vira-code"); ?>');
+			setTimeout(function() {
+				button.text(originalText);
+			}, 2000);
+		});
+	});
+
+	// Use snippet functionality
+	function useSnippet(snippet) {
+		// Redirect to snippet editor with pre-filled data
+		const params = new URLSearchParams({
+			title: snippet.title || snippet.name,
+			description: snippet.description,
+			code: snippet.code,
+			type: snippet.type,
+			scope: snippet.scope,
+			category: snippet.category,
+			tags: Array.isArray(snippet.tags) ? snippet.tags.join(', ') : snippet.tags
+		});
+
+		window.location.href = '<?php echo esc_url(
+      admin_url("admin.php?page=vira-code-new"),
+  ); ?>&' + params.toString();
+	}
+});
+</script>

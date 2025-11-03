@@ -174,16 +174,47 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<tbody>
 						<tr>
 							<th scope="row">
+								<?php esc_html_e( 'Storage Mode', 'vira-code' ); ?>
+							</th>
+							<td>
+								<?php
+								$storage_mode = get_option( 'vira_code_storage_mode', 'database' );
+								$file_storage = new \ViraCode\Services\FileStorageService();
+								$file_available = $file_storage->isAvailable();
+								?>
+								<div class="vira-storage-mode-indicator vira-mode-<?php echo esc_attr( $storage_mode ); ?>">
+									<?php if ( 'file' === $storage_mode ) : ?>
+										<span class="dashicons dashicons-media-document"></span>
+										<?php esc_html_e( 'File Storage', 'vira-code' ); ?>
+									<?php else : ?>
+										<span class="dashicons dashicons-database"></span>
+										<?php esc_html_e( 'Database Storage', 'vira-code' ); ?>
+									<?php endif; ?>
+								</div>
+								<br>
+								<a href="<?php echo esc_url( admin_url( 'admin.php?page=vira-code-migration' ) ); ?>" class="button button-secondary">
+									<?php esc_html_e( 'Manage Storage', 'vira-code' ); ?>
+								</a>
+								<?php if ( 'file' === $storage_mode && ! $file_available ) : ?>
+									<p class="description" style="color: #dc3232;">
+										<?php esc_html_e( 'Warning: File storage is not available. Check directory permissions.', 'vira-code' ); ?>
+									</p>
+								<?php endif; ?>
+							</td>
+						</tr>
+
+						<tr>
+							<th scope="row">
 								<?php esc_html_e( 'Total Snippets', 'vira-code' ); ?>
 							</th>
 							<td>
 								<?php
-								$model = new \ViraCode\Models\SnippetModel();
+								$manager = new \ViraCode\Services\SnippetManagerService();
 								$stats = array(
-									'total'    => $model->count(),
-									'active'   => $model->count( array( 'status' => 'active' ) ),
-									'inactive' => $model->count( array( 'status' => 'inactive' ) ),
-									'error'    => $model->count( array( 'status' => 'error' ) ),
+									'total'    => $manager->count(),
+									'active'   => $manager->count( array( 'status' => 'active' ) ),
+									'inactive' => $manager->count( array( 'status' => 'inactive' ) ),
+									'error'    => $manager->count( array( 'status' => 'error' ) ),
 								);
 								?>
 								<strong><?php echo esc_html( $stats['total'] ); ?></strong>
@@ -205,14 +236,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 							</th>
 							<td>
 								<?php
-								$logs = \ViraCode\vira_code_get_logs();
+								$logs = \ViraCode\vira_code_get_logs( $settings['log_limit'] );
 								$log_count = count( $logs );
+								$log_limit = (int) $settings['log_limit'];
 								?>
-								<strong><?php echo esc_html( $log_count ); ?></strong> <?php esc_html_e( 'entries', 'vira-code' ); ?>
+								<strong><?php echo esc_html( $log_count ); ?></strong> 
+								<?php
+								if ( $log_count >= $log_limit ) {
+									printf(
+										/* translators: %d: log limit number */
+										esc_html__( 'entries (showing last %d)', 'vira-code' ),
+										$log_limit
+									);
+								} else {
+									esc_html_e( 'entries', 'vira-code' );
+								}
+								?>
 								<br>
 								<a href="<?php echo esc_url( admin_url( 'admin.php?page=vira-code-logs' ) ); ?>" class="button button-secondary">
 									<?php esc_html_e( 'View Logs', 'vira-code' ); ?>
 								</a>
+								<?php if ( $log_count >= $log_limit ) : ?>
+									<p class="description">
+										<?php
+										printf(
+											/* translators: %d: log limit number */
+											esc_html__( 'Only the most recent %d log entries are displayed. Increase the limit below to show more entries.', 'vira-code' ),
+											$log_limit
+										);
+										?>
+									</p>
+								<?php endif; ?>
 							</td>
 						</tr>
 
@@ -253,30 +307,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									class="small-text"
 								>
 								<p class="description">
-									<?php esc_html_e( 'Set the maximum number of execution logs to display on the logs page.', 'vira-code' ); ?>
-								</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-
-			<!-- Danger Zone -->
-			<div class="vira-settings-section vira-danger-zone">
-				<h2><?php esc_html_e( 'Danger Zone', 'vira-code' ); ?></h2>
-
-				<table class="form-table" role="presentation">
-					<tbody>
-						<tr>
-							<th scope="row">
-								<?php esc_html_e( 'Clear Execution Logs', 'vira-code' ); ?>
-							</th>
-							<td>
-								<button type="button" class="button button-secondary" id="vira-clear-logs">
-									<?php esc_html_e( 'Clear All Logs', 'vira-code' ); ?>
-								</button>
-								<p class="description">
-									<?php esc_html_e( 'This will permanently delete all execution logs. This action cannot be undone.', 'vira-code' ); ?>
+									<?php esc_html_e( 'Set the maximum number of execution logs to display on the logs page and in the system status above.', 'vira-code' ); ?>
 								</p>
 							</td>
 						</tr>
@@ -332,44 +363,6 @@ jQuery(document).ready(function($) {
 					}, 1000);
 				} else {
 					button.text(originalText);
-					alert(response.data.message || '<?php esc_html_e( 'An error occurred.', 'vira-code' ); ?>');
-				}
-			},
-			error: function() {
-				button.prop('disabled', false).text(originalText);
-				alert('<?php esc_html_e( 'An error occurred. Please try again.', 'vira-code' ); ?>');
-			}
-		});
-	});
-
-	// Clear logs via AJAX
-	$('#vira-clear-logs').on('click', function(e) {
-		e.preventDefault();
-
-		if (!confirm('<?php esc_html_e( 'Are you sure you want to clear all execution logs? This action cannot be undone.', 'vira-code' ); ?>')) {
-			return;
-		}
-
-		var button = $(this);
-		var originalText = button.text();
-
-		button.prop('disabled', true).text('<?php esc_html_e( 'Clearing...', 'vira-code' ); ?>');
-
-		$.ajax({
-			url: ajaxUrl,
-			type: 'POST',
-			data: {
-				action: 'vira_code_clear_logs',
-				nonce: viraNonce
-			},
-			success: function(response) {
-				button.prop('disabled', false).text(originalText);
-
-				if (response.success) {
-					$('.vira-settings-form').prepend(
-						'<div class="notice notice-success is-dismissible"><p>' + response.data.message + '</p></div>'
-					);
-				} else {
 					alert(response.data.message || '<?php esc_html_e( 'An error occurred.', 'vira-code' ); ?>');
 				}
 			},

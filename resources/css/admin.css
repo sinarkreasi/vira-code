@@ -433,21 +433,43 @@
 	margin-top: 20px;
 }
 
-.vira-danger-zone {
-	background: #fff5f5;
-	border-top: 2px solid #dc3232;
-}
-
-.vira-danger-zone h2 {
-	color: #dc3232;
-}
-
 /* ==========================================================================
    Logs Page
    ========================================================================== */
 
 .vira-logs-page {
 	max-width: 1400px;
+}
+
+.vira-logs-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 15px;
+}
+
+.vira-logs-toolbar__title {
+	flex: 1 1 auto;
+	min-width: 200px;
+}
+
+.vira-logs-toolbar__title .wp-heading-inline {
+	margin: 0;
+}
+
+.vira-logs-toolbar__actions {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.vira-logs-toolbar__actions .page-title-action,
+.vira-logs-toolbar__actions .button {
+	margin: 0;
 }
 
 .vira-logs-container {
@@ -460,85 +482,6 @@
 	border: 1px solid #dcdcde;
 	border-bottom: none;
 	border-radius: 4px 4px 0 0;
-}
-
-.vira-logs-table {
-	margin-top: 0;
-}
-
-.vira-logs-table .column-timestamp {
-	width: 20%;
-}
-
-.vira-logs-table .column-snippet {
-	width: 20%;
-}
-
-.vira-logs-table .column-status {
-	width: 15%;
-}
-
-.vira-logs-table .column-message {
-	width: 45%;
-}
-
-.vira-log-entry.vira-log-error {
-	background: #fff5f5;
-}
-
-.vira-log-status {
-	display: inline-flex;
-	align-items: center;
-	gap: 5px;
-	padding: 4px 10px;
-	border-radius: 3px;
-	font-size: 12px;
-	font-weight: 500;
-}
-
-.vira-log-status-success {
-	background: #d7f0db;
-	color: #1e4620;
-}
-
-.vira-log-status-success .dashicons {
-	color: #46b450;
-}
-
-.vira-log-status-error {
-	background: #f8d7da;
-	color: #721c24;
-}
-
-.vira-log-status-error .dashicons {
-	color: #dc3232;
-}
-
-.vira-log-message {
-	font-family: 'Courier New', Courier, monospace;
-	font-size: 12px;
-	padding: 10px;
-	background: #f6f7f7;
-	border-left: 3px solid #dc3232;
-	border-radius: 3px;
-	overflow-x: auto;
-}
-
-.vira-time-ago {
-	color: #999;
-	font-style: italic;
-}
-
-.vira-deleted-snippet {
-	color: #999;
-}
-
-.vira-logs-footer {
-	background: #fff;
-	padding: 15px 20px;
-	border: 1px solid #dcdcde;
-	border-top: none;
-	border-radius: 0 0 4px 4px;
 }
 
 /* ==========================================================================
@@ -560,6 +503,14 @@
 
 	.vira-editor-sidebar {
 		position: static;
+	}
+
+	.vira-logs-toolbar {
+		align-items: stretch;
+	}
+
+	.vira-logs-toolbar__actions {
+		justify-content: flex-start;
 	}
 }
 
@@ -730,7 +681,7 @@
 	width: 48px;
 	height: 48px;
 	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	border-radius: 8px;
+	border-radius: 50px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1430,76 +1381,8 @@ mport/Export Dialog Styles */
 }
 
 /* ==========================================================================
-   Conditional Logic Preview Modal
+   Conditional Logic Preview Modal (Enhanced)
    ========================================================================== */
-
-.vira-modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.7);
-	z-index: 999999;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.vira-modal-content {
-	background: #fff;
-	border-radius: 8px;
-	max-width: 600px;
-	width: 90%;
-	max-height: 80vh;
-	display: flex;
-	flex-direction: column;
-	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-}
-
-.vira-modal-header {
-	padding: 20px 25px;
-	border-bottom: 1px solid #dcdcde;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.vira-modal-header h3 {
-	margin: 0;
-	font-size: 18px;
-	font-weight: 600;
-	color: #1d2327;
-}
-
-.vira-modal-close {
-	background: none;
-	border: none;
-	cursor: pointer;
-	padding: 5px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 4px;
-	transition: all 0.2s ease;
-}
-
-.vira-modal-close:hover {
-	background: #f0f0f1;
-}
-
-.vira-modal-close .dashicons {
-	font-size: 20px;
-	width: 20px;
-	height: 20px;
-	color: #646970;
-}
-
-.vira-modal-body {
-	padding: 25px;
-	overflow-y: auto;
-	flex: 1;
-}
 
 .vira-loading-spinner {
 	text-align: center;
@@ -1725,10 +1608,8 @@ mport/Export Dialog Styles */
 		flex: 1;
 	}
 }
-/* ========
-==================================================================
-   Conditional Logic Section (moved from sidebar)
-   ========================================================================== */
+
+/* ====== Conditional Logic Section ===== */
 
 .vira-conditional-logic-section {
 	border: 1px solid #c3c4c7;
@@ -1775,7 +1656,6 @@ mport/Export Dialog Styles */
 	padding: 8px 12px;
 	margin-bottom: 5px;
 	border-radius: 3px;
-	border-left: 3px solid #ddd;
 	background: #f9f9f9;
 }
 
@@ -1817,4 +1697,1383 @@ mport/Export Dialog Styles */
 		align-items: flex-start;
 		gap: 10px;
 	}
+}
+/*
+ ==========================================================================
+   Compact Control Bar (Filters + Bulk Actions)
+   ========================================================================== */
+
+.vira-control-bar {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	margin: 20px 0;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.vira-control-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15px 20px;
+	gap: 20px;
+}
+
+/* Filter Section */
+.vira-filter-section {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+}
+
+.vira-control-select,
+.vira-control-input {
+	padding: 6px 10px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	font-size: 13px;
+	height: 32px;
+	box-sizing: border-box;
+}
+
+.vira-control-select {
+	min-width: 140px;
+	background: #fff;
+}
+
+.vira-control-input {
+	min-width: 200px;
+}
+
+.vira-control-input::placeholder {
+	color: #999;
+	font-style: italic;
+}
+
+/* Bulk Actions Section */
+.vira-bulk-section {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-shrink: 0;
+}
+
+.vira-bulk-select-all {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	margin: 0;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.vira-bulk-select-all input[type="checkbox"] {
+	margin: 0;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+	.vira-control-row {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 15px;
+	}
+	
+	.vira-filter-section {
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	
+	.vira-bulk-section {
+		justify-content: space-between;
+		padding-top: 15px;
+		border-top: 1px solid #f0f0f1;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.vira-control-row {
+		padding: 12px 15px;
+	}
+	
+	.vira-filter-section {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 8px;
+	}
+	
+	.vira-control-select,
+	.vira-control-input {
+		width: 100%;
+		min-width: auto;
+	}
+	
+	.vira-bulk-section {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 8px;
+	}
+	
+	.vira-bulk-select-all {
+		justify-content: center;
+	}
+}
+
+/* Hover Effects */
+.vira-control-select:hover,
+.vira-control-input:hover {
+	border-color: #2271b1;
+}
+
+.vira-control-select:focus,
+.vira-control-input:focus {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+	outline: none;
+}
+
+/* Button Styling */
+.vira-control-bar .button {
+	height: 32px;
+	line-height: 30px;
+	padding: 0 12px;
+	font-size: 13px;
+}
+
+.vira-control-bar .button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}/* 
+==========================================================================
+   Migration Page Styles
+   ========================================================================== */
+
+.vira-migration-page {
+	max-width: 1200px;
+}
+
+.vira-migration-container {
+	margin-top: 20px;
+}
+
+.vira-migration-section {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	padding: 30px;
+	margin-bottom: 30px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.vira-migration-section h2 {
+	margin: 0 0 20px 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+/* Storage Overview */
+.vira-storage-overview {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	gap: 30px;
+	align-items: start;
+}
+
+.vira-storage-card {
+	text-align: center;
+	padding: 30px 20px;
+	border: 2px solid #dcdcde;
+	border-radius: 8px;
+	background: #f9f9f9;
+}
+
+.vira-storage-card.vira-storage-file {
+	border-color: #2271b1;
+	background: #e7f3ff;
+}
+
+.vira-storage-card.vira-storage-database {
+	border-color: #46b450;
+	background: #f0f8f0;
+}
+
+.vira-storage-card h3 {
+	margin: 0 0 15px 0;
+	font-size: 16px;
+	color: #646970;
+}
+
+.vira-mode-badge {
+	display: inline-block;
+	padding: 8px 16px;
+	font-size: 14px;
+	font-weight: 600;
+	border-radius: 20px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.vira-mode-badge.vira-mode-file {
+	background: #2271b1;
+	color: #fff;
+}
+
+.vira-mode-badge.vira-mode-database {
+	background: #46b450;
+	color: #fff;
+}
+
+.vira-storage-stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 20px;
+}
+
+.vira-stat-item {
+	text-align: center;
+	padding: 20px;
+	background: #f6f7f7;
+	border-radius: 6px;
+	border: 1px solid #dcdcde;
+}
+
+.vira-stat-label {
+	font-size: 12px;
+	color: #646970;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-bottom: 8px;
+}
+
+.vira-stat-value {
+	font-size: 24px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.vira-status-available {
+	color: #46b450;
+	font-weight: 600;
+}
+
+.vira-status-unavailable {
+	color: #dc3232;
+	font-weight: 600;
+}
+
+/* Migration Actions */
+.vira-migration-actions {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 25px;
+}
+
+.vira-migration-card {
+	padding: 25px;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	background: #fafafa;
+	text-align: center;
+}
+
+.vira-migration-card h3 {
+	margin: 0 0 15px 0;
+	font-size: 16px;
+	color: #1d2327;
+}
+
+.vira-migration-card p {
+	margin: 0 0 20px 0;
+	color: #646970;
+	line-height: 1.6;
+}
+
+.vira-migration-card .button {
+	margin-bottom: 10px;
+}
+
+.vira-count {
+	font-size: 12px;
+	opacity: 0.8;
+}
+
+/* Storage Mode Switch */
+.vira-storage-mode-switch {
+	max-width: 600px;
+}
+
+.vira-mode-options {
+	margin: 20px 0;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.vira-mode-option {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 20px;
+	border: 2px solid #dcdcde;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.vira-mode-option:hover {
+	border-color: #2271b1;
+	background: #f6f7f7;
+}
+
+.vira-mode-option input[type="radio"] {
+	margin: 0;
+	margin-top: 2px;
+}
+
+.vira-mode-label {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.vira-mode-label strong {
+	color: #1d2327;
+	font-size: 14px;
+}
+
+.vira-mode-description {
+	color: #646970;
+	font-size: 13px;
+}
+
+.vira-mode-option input[type="radio"]:checked + .vira-mode-label {
+	color: #2271b1;
+}
+
+.vira-mode-option input[type="radio"]:disabled + .vira-mode-label {
+	opacity: 0.5;
+}
+
+/* Danger Zone */
+.vira-danger-zone {
+	border-color: #dc3232;
+	background: #fff5f5;
+}
+
+.vira-danger-zone h2 {
+	color: #dc3232;
+}
+
+.vira-cleanup-actions {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 20px;
+}
+
+.vira-cleanup-card {
+	padding: 20px;
+	border: 1px solid #f0a5a8;
+	border-radius: 6px;
+	background: #fcf0f1;
+	text-align: center;
+}
+
+.vira-cleanup-card h4 {
+	margin: 0 0 10px 0;
+	color: #721c24;
+}
+
+.vira-cleanup-card p {
+	margin: 0 0 15px 0;
+	color: #721c24;
+	font-size: 13px;
+}
+
+/* Migration Log */
+.vira-migration-log {
+	background: #1e1e1e;
+	color: #f8f8f2;
+	padding: 20px;
+	border-radius: 6px;
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 13px;
+	line-height: 1.6;
+	max-height: 400px;
+	overflow-y: auto;
+	border: 1px solid #333;
+}
+
+.vira-migration-log .vira-log-empty {
+	color: #999;
+	text-align: center;
+	font-style: italic;
+	margin: 0;
+}
+
+.vira-migration-log .vira-log-entry {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin-bottom: 8px;
+	padding: 5px 0;
+}
+
+.vira-migration-log .vira-log-entry:last-child {
+	margin-bottom: 0;
+}
+
+.vira-migration-log .vira-log-time {
+	color: #999;
+	font-size: 11px;
+	min-width: 80px;
+	flex-shrink: 0;
+}
+
+.vira-migration-log .vira-log-icon {
+	min-width: 16px;
+	text-align: center;
+	flex-shrink: 0;
+}
+
+.vira-migration-log .vira-log-message {
+	flex: 1;
+	word-break: break-word;
+}
+
+/* Log Level Colors */
+.vira-migration-log .vira-log-entry.vira-log-info .vira-log-icon {
+	color: #61dafb;
+}
+
+.vira-migration-log .vira-log-entry.vira-log-success .vira-log-icon {
+	color: #46b450;
+}
+
+.vira-migration-log .vira-log-entry.vira-log-warning .vira-log-icon {
+	color: #f56e28;
+}
+
+.vira-migration-log .vira-log-entry.vira-log-error .vira-log-icon {
+	color: #dc3232;
+}
+
+.vira-migration-log .vira-log-entry.vira-log-error .vira-log-message {
+	color: #ff6b6b;
+}
+
+.vira-migration-log .vira-log-entry.vira-log-success .vira-log-message {
+	color: #51cf66;
+}
+
+.vira-migration-log .vira-log-entry.vira-log-warning .vira-log-message {
+	color: #ffd43b;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+	.vira-storage-overview {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+	
+	.vira-migration-actions {
+		grid-template-columns: 1fr;
+	}
+	
+	.vira-cleanup-actions {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.vira-migration-section {
+		padding: 20px;
+	}
+	
+	.vira-storage-stats {
+		grid-template-columns: 1fr;
+	}
+	
+	.vira-mode-options {
+		gap: 10px;
+	}
+	
+	.vira-mode-option {
+		padding: 15px;
+	}
+}
+
+/* Storage Type Column in Snippets List */
+.vira-snippets-table .column-storage {
+	width: 12%;
+}
+
+.vira-storage-badge {
+	display: inline-block;
+	padding: 4px 8px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	border-radius: 3px;
+	letter-spacing: 0.5px;
+}
+
+.vira-storage-badge-database {
+	background: #d7f0db;
+	color: #1e4620;
+}
+
+.vira-storage-badge-file {
+	background: #e7f3ff;
+	color: #0a4b78;
+}
+
+/* Settings Page Storage Mode Indicator */
+.vira-storage-mode-indicator {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	background: #f0f0f1;
+	border-radius: 4px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.vira-storage-mode-indicator.vira-mode-file {
+	background: #e7f3ff;
+	color: #0a4b78;
+}
+
+.vira-storage-mode-indicator.vira-mode-database {
+	background: #d7f0db;
+	color: #1e4620;
+}
+
+.vira-storage-mode-indicator .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+/* ==========================================================================
+   Library Migration Styles
+   ========================================================================== */
+
+.vira-library-status {
+	margin: 15px 0;
+}
+
+.vira-library-status .notice {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 15px;
+	margin: 0;
+}
+
+.vira-library-status .notice p {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	flex: 1;
+}
+
+.vira-library-status .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+.vira-library-status .button-small {
+	font-size: 12px;
+	height: 24px;
+	line-height: 22px;
+	padding: 0 8px;
+	margin-left: 8px;
+}
+
+/* Library card enhancements for file-based storage */
+.vira-library-card[data-storage="library_file"] {
+	border-top: 3px solid #2271b1;
+}
+
+.vira-library-card[data-storage="library_file"] .vira-card-header::after {
+	content: "📁";
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 12px;
+	opacity: 0.7;
+}
+
+.vira-library-card .vira-card-header {
+	position: relative;
+}
+
+/* Storage type indicator */
+.vira-storage-type-indicator {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 11px;
+	color: #646970;
+	margin-top: 5px;
+}
+
+.vira-storage-type-indicator .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+}
+
+.vira-storage-type-file {
+	color: #2271b1;
+}
+
+.vira-storage-type-hardcoded {
+	color: #f56e28;
+}
+
+/* ==========================================================================
+   Library Cleanup Modal Styles
+   ========================================================================== */
+
+.vira-cleanup-status {
+	margin-bottom: 25px;
+}
+
+.vira-status-indicator {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 15px;
+	border-radius: 6px;
+	margin: 15px 0;
+	font-weight: 500;
+}
+
+.vira-status-indicator.vira-status-safe {
+	background: #d7f0db;
+	color: #1e4620;
+	border-left: 4px solid #46b450;
+}
+
+.vira-status-indicator.vira-status-unsafe {
+	background: #f8d7da;
+	color: #721c24;
+	border-left: 4px solid #dc3232;
+}
+
+.vira-status-indicator .dashicons {
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
+}
+
+.vira-cleanup-stats {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 15px;
+	margin-top: 15px;
+}
+
+.vira-stat-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 15px;
+	background: #f6f7f7;
+	border-radius: 4px;
+	font-size: 13px;
+}
+
+.vira-stat-row span:first-child {
+	color: #646970;
+}
+
+.vira-stat-row span:last-child {
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.vira-cleanup-recommendations,
+.vira-cleanup-instructions {
+	margin-bottom: 25px;
+}
+
+.vira-cleanup-recommendations h4,
+.vira-cleanup-instructions h4 {
+	margin: 0 0 15px 0;
+	font-size: 16px;
+	color: #1d2327;
+}
+
+.vira-recommendations-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.vira-cleanup-instructions ol {
+	margin: 15px 0;
+	padding-left: 20px;
+}
+
+.vira-cleanup-instructions li {
+	margin-bottom: 8px;
+	line-height: 1.6;
+}
+
+/* Responsive adjustments for cleanup modal */
+@media screen and (max-width: 782px) {
+	.vira-cleanup-stats {
+		grid-template-columns: 1fr;
+		gap: 10px;
+	}
+	
+	.vira-status-indicator {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+		text-align: left;
+	}
+}
+
+/* ==========================================================================
+   Enhanced Logs Page Layout
+   ========================================================================== */
+
+/* Page Header */
+.vira-page-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 20px;
+	gap: 20px;
+}
+
+.vira-page-title {
+	flex: 1;
+}
+
+.vira-page-title .wp-heading-inline {
+	margin: 0 0 5px 0;
+}
+
+.vira-page-subtitle {
+	color: #646970;
+	font-size: 14px;
+	font-style: italic;
+}
+
+.vira-page-actions {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.vira-page-actions .button {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.vira-page-actions .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+/* Logs Content */
+.vira-logs-content {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Logs Empty State */
+.vira-logs-content .vira-empty-state {
+	text-align: center;
+	padding: 80px 40px;
+}
+
+.vira-logs-content .vira-empty-state .vira-empty-icon {
+	margin-bottom: 30px;
+}
+
+.vira-logs-content .vira-empty-state .vira-empty-icon .dashicons {
+	font-size: 120px;
+	width: 120px;
+	height: 120px;
+	color: #c3c4c7;
+}
+
+.vira-logs-content .vira-empty-state h2 {
+	margin: 0 0 15px;
+	color: #50575e;
+	font-size: 24px;
+}
+
+.vira-logs-content .vira-empty-state p {
+	color: #646970;
+	font-size: 16px;
+	line-height: 1.6;
+	margin-bottom: 30px;
+	max-width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.vira-logs-content .vira-empty-actions {
+	margin-top: 30px;
+}
+
+/* Logs Statistics */
+.vira-logs-stats {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+	padding: 25px;
+	border-bottom: 1px solid #dcdcde;
+	background: #f9f9f9;
+}
+
+.vira-logs-stats .vira-stat-card {
+	text-align: center;
+	padding: 20px 15px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	transition: all 0.2s ease;
+}
+
+.vira-logs-stats .vira-stat-card:hover {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transform: translateY(-2px);
+}
+
+.vira-logs-stats .vira-stat-number {
+	font-size: 32px;
+	font-weight: 700;
+	color: #1d2327;
+	line-height: 1;
+	margin-bottom: 8px;
+}
+
+.vira-logs-stats .vira-stat-number.vira-stat-success {
+	color: #46b450;
+}
+
+.vira-logs-stats .vira-stat-number.vira-stat-error {
+	color: #dc3232;
+}
+
+.vira-logs-stats .vira-stat-label {
+	font-size: 13px;
+	color: #646970;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	font-weight: 600;
+}
+
+/* Logs Table Container */
+.vira-logs-table-container {
+	overflow-x: auto;
+	padding: 20px 25px 25px;
+}
+
+.vira-logs-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0;
+}
+
+.vira-logs-table th {
+	padding: 15px 12px;
+	text-align: left;
+	border-bottom: 2px solid #dcdcde;
+	font-weight: 600;
+	color: #1d2327;
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+.vira-logs-table th .dashicons {
+	margin-right: 6px;
+	color: #646970;
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+}
+
+.vira-logs-table td {
+	padding: 15px 12px;
+	border-bottom: 1px solid #f0f0f1;
+	vertical-align: top;
+}
+
+.vira-logs-table .column-timestamp {
+	width: 18%;
+	min-width: 160px;
+}
+
+.vira-logs-table .column-snippet {
+	width: 25%;
+	min-width: 200px;
+}
+
+.vira-logs-table .column-status {
+	width: 12%;
+	min-width: 100px;
+}
+
+.vira-logs-table .column-message {
+	width: 45%;
+	min-width: 250px;
+}
+
+/* Log Entry Styles */
+.vira-log-entry {
+	transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.vira-log-entry:hover,
+.vira-log-entry.vira-log-hover {
+	background-color: #f4f7fb;
+}
+
+.vira-log-entry.vira-log-error {
+	background-color: #fff5f5;
+}
+
+.vira-log-entry.vira-log-success {
+	background-color: #f3fbf4;
+}
+
+/* Timestamp Wrapper */
+.vira-timestamp-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.vira-timestamp-main {
+	font-weight: 600;
+	color: #1d2327;
+	font-size: 14px;
+}
+
+.vira-timestamp-time {
+	color: #646970;
+	font-size: 13px;
+}
+
+.vira-timestamp-relative {
+	color: #999;
+	font-size: 12px;
+	font-style: italic;
+}
+
+/* Snippet Info */
+.vira-snippet-info {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.vira-snippet-id {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 13px;
+	color: #646970;
+}
+
+.vira-snippet-title {
+	font-weight: 600;
+}
+
+.vira-snippet-link {
+	color: #2271b1;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+.vira-snippet-link:hover {
+	color: #135e96;
+	text-decoration: underline;
+}
+
+.vira-snippet-meta {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.vira-snippet-type {
+	font-size: 10px;
+	padding: 2px 6px;
+	border-radius: 3px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.vira-snippet-deleted {
+	color: #999;
+	font-style: italic;
+}
+
+/* Status Wrapper */
+.vira-status-wrapper {
+	display: flex;
+	align-items: center;
+}
+
+.vira-log-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.vira-log-status-success {
+	background: #d7f0db;
+	color: #1e4620;
+}
+
+.vira-log-status-success .dashicons {
+	color: #46b450;
+}
+
+.vira-log-status-error {
+	background: #f8d7da;
+	color: #721c24;
+}
+
+.vira-log-status-error .dashicons {
+	color: #dc3232;
+}
+
+.vira-log-status .dashicons {
+	font-size: 14px;
+	width: 14px;
+	height: 14px;
+}
+
+/* Message Wrapper */
+.vira-message-wrapper {
+	position: relative;
+}
+
+.vira-log-message {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 13px;
+	line-height: 1.5;
+	color: #1d2327;
+	background: #f6f7f7;
+	padding: 12px;
+	border-radius: 4px;
+	word-break: break-word;
+	white-space: pre-wrap;
+}
+
+.vira-log-entry.vira-log-error .vira-log-message {
+	background: #fcf0f1;
+	color: #721c24;
+}
+
+.vira-log-entry.vira-log-success .vira-log-message {
+	background: #f0f8f0;
+	color: #1e4620;
+}
+
+.vira-message-empty {
+	font-style: italic;
+	color: #999 !important;
+	background: #f9f9f9 !important;
+}
+
+.vira-expand-message {
+	color: #2271b1;
+	font-size: 12px;
+	text-decoration: none;
+	cursor: pointer;
+	border: none;
+	background: none;
+	padding: 0;
+	margin-left: 5px;
+}
+
+.vira-expand-message:hover {
+	text-decoration: underline;
+}
+
+/* Logs Footer */
+.vira-logs-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px 25px;
+	border-top: 1px solid #dcdcde;
+	background: #f9f9f9;
+}
+
+.vira-logs-info {
+	flex: 1;
+}
+
+.vira-logs-info .description {
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: #646970;
+}
+
+.vira-logs-info .dashicons {
+	color: #2271b1;
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+.vira-logs-actions {
+	display: flex;
+	gap: 10px;
+}
+
+.vira-logs-actions .button {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+/* Spinning animation for loading states */
+.spin {
+	animation: vira-spin 1s linear infinite;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+	.vira-logs-stats {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.vira-page-header {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 15px;
+	}
+	
+	.vira-page-actions {
+		justify-content: center;
+	}
+	
+	.vira-logs-stats {
+		grid-template-columns: 1fr;
+		gap: 15px;
+		padding: 20px;
+	}
+
+	.vira-logs-table-container {
+		padding: 15px;
+	}
+	
+	.vira-logs-stats .vira-stat-card {
+		padding: 15px;
+	}
+
+	.vira-logs-stats .vira-stat-number {
+		font-size: 24px;
+	}
+	
+	/* Mobile table layout */
+	.vira-logs-table,
+	.vira-logs-table thead,
+	.vira-logs-table tbody,
+	.vira-logs-table th,
+	.vira-logs-table td,
+	.vira-logs-table tr {
+		display: block;
+	}
+	
+	.vira-logs-table thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	.vira-logs-table tr {
+		border: 1px solid #dcdcde;
+		margin-bottom: 15px;
+		padding: 15px;
+		border-radius: 6px;
+		background: #fff;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+	
+	.vira-logs-table td {
+		border: none;
+		border-bottom: 1px solid #f0f0f1;
+		position: relative;
+		padding: 12px 0;
+		text-align: left;
+	}
+	
+	.vira-logs-table td:before {
+		content: attr(data-colname);
+		display: block;
+		font-weight: 600;
+		color: #646970;
+		font-size: 12px;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		margin-bottom: 6px;
+	}
+	
+	.vira-logs-table td:last-child {
+		border-bottom: none;
+	}
+	
+	.vira-logs-footer {
+		flex-direction: column;
+		gap: 15px;
+		text-align: center;
+	}
+}
+
+/*
+ ==========================================================================
+   Library Source Indicators
+   ========================================================================== */
+
+/* Library card source indicators */
+.vira-library-card[data-source="file_storage"] {
+	border-top: 3px solid #2271b1;
+}
+
+.vira-library-card[data-source="hardcoded"] {
+	border-top: 3px solid #f56e28;
+}
+
+.vira-storage-type-indicator {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 11px;
+	margin-top: 8px;
+	padding: 4px 8px;
+	border-radius: 3px;
+	font-weight: 500;
+}
+
+.vira-storage-type-file_storage {
+	background: #e7f3ff;
+	color: #0a4b78;
+}
+
+.vira-storage-type-hardcoded {
+	background: #fff3e0;
+	color: #bf360c;
+}
+
+.vira-storage-type-indicator .dashicons {
+	font-size: 12px;
+	width: 12px;
+	height: 12px;
+}
+
+/* Logs page storage indicators */
+.vira-logs-table .vira-storage-type {
+	margin-top: 4px;
+}
+
+.vira-logs-table .vira-storage-badge {
+	font-size: 10px;
+	padding: 2px 6px;
+}
+
+/* Library status enhancements */
+.vira-library-status .notice.notice-warning {
+	border-top-color: #f56e28;
+}
+
+.vira-library-status .notice.notice-info {
+	border-top-color: #72aee6;
+}
+
+/* Cleanup recommendations styling */
+.vira-cleanup-recommendations {
+	margin: 20px 0;
+	padding: 15px;
+	background: #f9f9f9;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.vira-cleanup-recommendation {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin-bottom: 10px;
+	padding: 8px;
+	border-radius: 3px;
+}
+
+.vira-cleanup-recommendation:last-child {
+	margin-bottom: 0;
+}
+
+.vira-cleanup-recommendation.recommendation-success {
+	background: #f0f8f0;
+	border-left: 3px solid #46b450;
+}
+
+.vira-cleanup-recommendation.recommendation-warning {
+	background: #fff8e1;
+	border-left: 3px solid #f56e28;
+}
+
+.vira-cleanup-recommendation.recommendation-error {
+	background: #fdf0f1;
+	border-left: 3px solid #dc3232;
+}
+
+.vira-cleanup-recommendation.recommendation-info {
+	background: #f0f6fc;
+	border-left: 3px solid #2271b1;
+}
+
+.vira-cleanup-recommendation .dashicons {
+	flex-shrink: 0;
+	margin-top: 2px;
+}
+
+.vira-cleanup-recommendation.recommendation-success .dashicons {
+	color: #46b450;
+}
+
+.vira-cleanup-recommendation.recommendation-warning .dashicons {
+	color: #f56e28;
+}
+
+.vira-cleanup-recommendation.recommendation-error .dashicons {
+	color: #dc3232;
+}
+
+.vira-cleanup-recommendation.recommendation-info .dashicons {
+	color: #2271b1;
 }

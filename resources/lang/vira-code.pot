@@ -1,0 +1,463 @@
+# Copyright (C) 2025 Viraloka
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Vira Code 1.0.1\n"
+"Report-Msgid-Bugs-To: https://viraloka.com/support\n"
+"POT-Creation-Date: 2025-11-03 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Vira Code\n"
+"X-Domain: vira-code\n"
+
+#: vira-code.php:46
+msgid "<strong>%s</strong> requires Composer dependencies. Please run <code>composer install</code> in the plugin directory."
+msgstr ""
+
+#: app/Services/SnippetExecutor.php:160
+msgid "Unknown snippet type: %s"
+msgstr ""
+
+#: app/Services/SnippetExecutor.php:256
+msgid "Parse Error: %1$s on line %2$d"
+msgstr ""
+
+#: app/Services/SnippetExecutor.php:265
+msgid "Error: %1$s on line %2$d"
+msgstr ""
+
+#: app/Services/SnippetExecutor.php:274
+msgid "%1$s: %2$s"
+msgstr ""
+
+#: app/Services/SnippetExecutor.php:323
+msgid "Dangerous function not allowed: %s"
+msgstr ""
+
+#: app/Services/SnippetExecutor.php:456
+msgid "Snippet validation passed."
+msgstr ""
+
+#: app/Services/SnippetExecutor.php:465
+msgid "Snippet validation failed."
+msgstr ""
+
+msgid "Vira Code"
+msgstr ""
+
+msgid "Code Snippets"
+msgstr ""
+
+msgid "Snippets"
+msgstr ""
+
+msgid "Add New"
+msgstr ""
+
+msgid "Add New Snippet"
+msgstr ""
+
+msgid "Edit Snippet"
+msgstr ""
+
+msgid "View Snippet"
+msgstr ""
+
+msgid "Search Snippets"
+msgstr ""
+
+msgid "No snippets found."
+msgstr ""
+
+msgid "No snippets found in Trash."
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Safe Mode"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Library"
+msgstr ""
+
+msgid "Migration"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Code"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Scope"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Priority"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Inactive"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "PHP"
+msgstr ""
+
+msgid "JavaScript"
+msgstr ""
+
+msgid "CSS"
+msgstr ""
+
+msgid "HTML"
+msgstr ""
+
+msgid "Frontend"
+msgstr ""
+
+msgid "Admin"
+msgstr ""
+
+msgid "Both"
+msgstr ""
+
+msgid "Global"
+msgstr ""
+
+msgid "Save Snippet"
+msgstr ""
+
+msgid "Test Snippet"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Enable Safe Mode"
+msgstr ""
+
+msgid "Disable Safe Mode"
+msgstr ""
+
+msgid "All snippets are disabled in Safe Mode."
+msgstr ""
+
+msgid "Clear Logs"
+msgstr ""
+
+msgid "Export Logs"
+msgstr ""
+
+msgid "Storage Mode"
+msgstr ""
+
+msgid "Database"
+msgstr ""
+
+msgid "File Storage"
+msgstr ""
+
+msgid "Migrate Snippets"
+msgstr ""
+
+msgid "WooCommerce Library"
+msgstr ""
+
+msgid "Checkout"
+msgstr ""
+
+msgid "Cart"
+msgstr ""
+
+msgid "Pricing"
+msgstr ""
+
+msgid "Product"
+msgstr ""
+
+msgid "Shipping"
+msgstr ""
+
+msgid "Import to My Snippets"
+msgstr ""
+
+msgid "Conditional Logic"
+msgstr ""
+
+msgid "Enable conditional logic for this snippet"
+msgstr ""
+
+msgid "Add Condition"
+msgstr ""
+
+msgid "Condition Type"
+msgstr ""
+
+msgid "User Role"
+msgstr ""
+
+msgid "Page Type"
+msgstr ""
+
+msgid "URL Pattern"
+msgstr ""
+
+msgid "Device Type"
+msgstr ""
+
+msgid "Date Range"
+msgstr ""
+
+msgid "Custom PHP"
+msgstr ""
+
+msgid "Operator"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "AND"
+msgstr ""
+
+msgid "OR"
+msgstr ""
+
+msgid "Match All"
+msgstr ""
+
+msgid "Match Any"
+msgstr ""
+
+msgid "Execute this snippet only when conditions are met"
+msgstr ""
+
+msgid "Security Warning"
+msgstr ""
+
+msgid "Only administrators should have access to create and edit snippets."
+msgstr ""
+
+msgid "Always test snippets in a development environment first."
+msgstr ""
+
+msgid "Keep backups of your site before activating new snippets."
+msgstr ""
+
+msgid "Use Safe Mode to disable all snippets in case of emergency."
+msgstr ""
+
+msgid "Performance"
+msgstr ""
+
+msgid "Snippet executed successfully."
+msgstr ""
+
+msgid "Snippet execution failed."
+msgstr ""
+
+msgid "Snippet skipped due to conditional logic."
+msgstr ""
+
+msgid "Execution time: %s seconds"
+msgstr ""
+
+msgid "Memory usage: %s"
+msgstr ""
+
+msgid "Last executed: %s"
+msgstr ""
+
+msgid "Never executed"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Modified"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "Deactivate"
+msgstr ""
+
+msgid "Clone"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Bulk Actions"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Filter by type"
+msgstr ""
+
+msgid "Filter by scope"
+msgstr ""
+
+msgid "Filter by status"
+msgstr ""
+
+msgid "All Types"
+msgstr ""
+
+msgid "All Scopes"
+msgstr ""
+
+msgid "All Statuses"
+msgstr ""
+
+msgid "Search results for: %s"
+msgstr ""
+
+msgid "Showing %d of %d snippets"
+msgstr ""
+
+msgid "No results found."
+msgstr ""
+
+msgid "Security"
+msgstr ""
+
+msgid "Dangerous functions are restricted by default."
+msgstr ""
+
+msgid "PHP code is validated before execution."
+msgstr ""
+
+msgid "Errors are logged and snippets are auto-disabled on fatal errors."
+msgstr ""
+
+msgid "Safe Mode URL: %s"
+msgstr ""
+
+msgid "Log Limit"
+msgstr ""
+
+msgid "Maximum number of log entries to keep."
+msgstr ""
+
+msgid "Auto Safe Mode"
+msgstr ""
+
+msgid "Automatically enable Safe Mode after multiple snippet errors."
+msgstr ""
+
+msgid "Allowed Functions"
+msgstr ""
+
+msgid "Comma-separated list of allowed PHP functions. Leave empty to allow all."
+msgstr ""
+
+msgid "Blocked Functions"
+msgstr ""
+
+msgid "Comma-separated list of blocked PHP functions."
+msgstr ""
+
+msgid "Save Changes"
+msgstr ""
+
+msgid "Settings saved successfully."
+msgstr ""
+
+msgid "Failed to save settings."
+msgstr ""
+
+msgid "Snippet saved successfully."
+msgstr ""
+
+msgid "Failed to save snippet."
+msgstr ""
+
+msgid "Snippet deleted successfully."
+msgstr ""
+
+msgid "Failed to delete snippet."
+msgstr ""
+
+msgid "Snippet activated successfully."
+msgstr ""
+
+msgid "Snippet deactivated successfully."
+msgstr ""
+
+msgid "Safe Mode enabled."
+msgstr ""
+
+msgid "Safe Mode disabled."
+msgstr ""
+
+msgid "Logs cleared successfully."
+msgstr ""
+
+msgid "Migration completed successfully."
+msgstr ""
+
+msgid "Migration failed."
+msgstr ""
+
+msgid "Library snippet imported successfully."
+msgstr ""
+
+msgid "Invalid snippet ID."
+msgstr ""
+
+msgid "Invalid request."
+msgstr ""
+
+msgid "Unauthorized access."
+msgstr ""
+
+msgid "Nonce verification failed."
+msgstr ""
+
+msgid "Required field missing: %s"
+msgstr ""
+
+msgid "Invalid value for field: %s"
+msgstr ""

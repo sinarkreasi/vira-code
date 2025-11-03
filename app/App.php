@@ -11,6 +11,7 @@ use ViraCode\Providers\AdminServiceProvider;
 use ViraCode\Providers\ApiServiceProvider;
 use ViraCode\Providers\HookServiceProvider;
 use ViraCode\Providers\ConditionalLogicServiceProvider;
+use ViraCode\Providers\FileStorageServiceProvider;
 
 if (!defined("ABSPATH")) {
     exit();
@@ -95,6 +96,48 @@ class App
     public $conditionalLogicDebugger = null;
 
     /**
+     * File storage service instance.
+     *
+     * @var \ViraCode\Services\FileStorageService|null
+     */
+    public $fileStorageService = null;
+
+    /**
+     * File loader service instance.
+     *
+     * @var \ViraCode\Services\FileLoaderService|null
+     */
+    public $fileLoaderService = null;
+
+    /**
+     * Migration service instance.
+     *
+     * @var \ViraCode\Services\MigrationService|null
+     */
+    public $migrationService = null;
+
+    /**
+     * Snippet manager service instance.
+     *
+     * @var \ViraCode\Services\SnippetManagerService|null
+     */
+    public $snippetManagerService = null;
+
+    /**
+     * Migration controller instance.
+     *
+     * @var \ViraCode\Http\MigrationController|null
+     */
+    public $migrationController = null;
+
+    /**
+     * Library file storage service instance.
+     *
+     * @var \ViraCode\Services\LibraryFileStorageService|null
+     */
+    public $libraryFileStorageService = null;
+
+    /**
      * Private constructor to prevent direct instantiation.
      */
     private function __construct()
@@ -147,6 +190,7 @@ class App
             ApiServiceProvider::class,
             HookServiceProvider::class,
             ConditionalLogicServiceProvider::class,
+            FileStorageServiceProvider::class,
         ];
 
         $providers = apply_filters("vira_code/service_providers", $providers);

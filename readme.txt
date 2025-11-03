@@ -1,10 +1,10 @@
 === Vira Code ===
-Contributors: viracode
+Contributors: viraloka
 Tags: code snippets, php, javascript, css, custom code
-Requires at least: 6.0
-Tested up to: 6.4
+Requires at least: 6.8
+Tested up to: 6.8
 Requires PHP: 8.2
-Stable tag: 1.0.0
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,19 +17,25 @@ A modern, modular WordPress plugin for managing and executing code snippets safe
 = Features =
 
 * **Multiple Snippet Types** - Support for PHP, JavaScript, CSS, and HTML snippets
+* **File-Based Storage** - High-performance file storage system with automatic fallback to database
+* **WooCommerce Library** - Pre-built WooCommerce snippets organized by category (Checkout, Cart, Pricing, etc.)
 * **Safe Execution** - Sandbox PHP code execution with error handling and automatic rollback
 * **Execution Scope Control** - Run snippets on frontend, admin, or both
 * **Modern Admin Interface** - Clean, intuitive UI with syntax highlighting via CodeMirror
+* **Storage Migration** - Seamlessly migrate between database and file storage
 * **REST API** - Full REST API support for programmatic snippet management
 * **Safe Mode** - Emergency switch to disable all snippets in case of errors
 * **Execution Logs** - Track snippet execution with detailed logging
 * **Priority Control** - Set execution order for your snippets
 * **Categories & Tags** - Organize snippets with categories and tags
 * **Error Handling** - Automatic error detection and snippet disabling on fatal errors
+* **Conditional Logic** - Advanced conditional execution based on various criteria
 
 = Why Choose Vira Code? =
 
 * **Enterprise-Grade Architecture** - Built with modern PHP 8.2+ standards
+* **Dual Storage System** - Choose between database or high-performance file storage
+* **WooCommerce Ready** - Extensive library of WooCommerce customization snippets
 * **PSR-4 Autoloading** - Clean, organized codebase using Composer
 * **WordPress Coding Standards** - Follows all WordPress best practices
 * **Secure** - Proper sanitization, escaping, and nonce validation throughout
@@ -122,6 +128,44 @@ Currently, snippets are stored in the database. Import/export functionality may 
 
 == Changelog ==
 
+= 1.0.5 =
+* Major security enhancements:
+  - Added comprehensive dangerous function restrictions (50+ blocked functions)
+  - Implemented capability checks for all snippet executions
+  - Added code validation for JavaScript, CSS, and HTML snippets
+  - Improved output sanitization with wp_kses_post()
+  - Added protection against XSS, code injection, and malicious patterns
+* Performance optimizations:
+  - Implemented transient caching for snippet lists (1 hour cache)
+  - Automatic cache clearing on snippet updates
+  - Optimized database queries
+  - Lazy loading for better performance
+* WordPress 6.8.3 full compatibility verified
+* Added internationalization support with .pot template
+* Created security documentation (SECURITY.md)
+* Added .htaccess protection for language files
+* Improved error handling and logging
+
+= 1.0.4 =
+* Add file-based storage system for improved performance
+* Implement WooCommerce snippet library with 9+ ready-to-use snippets
+* Add storage migration tools (Database ↔ File Storage)
+* Organize library snippets by category (Checkout, Cart, Pricing, Product, Shipping)
+* Add library migration interface with one-click migration
+* Improve snippet organization and management
+* Add storage type indicators in admin interface
+* Enhanced security with .htaccess protection for snippet files
+
+= 1.0.3 =
+* Add conditional logic
+
+= 1.0.2 =
+* Add custom value log entries
+
+= 1.0.1 =
+* Fix bug clear logs
+* Optimize code
+
 = 1.0.0 =
 * Initial release
 * PHP, JavaScript, CSS, and HTML snippet support
@@ -132,16 +176,6 @@ Currently, snippets are stored in the database. Import/export functionality may 
 * Modern admin interface with CodeMirror
 * Categories and tags support
 * Priority-based execution order
-
-= 1.0.1 =
-* Fix bug clear logs
-* Optimize code
-
-= 1.0.2 =
-* Add custom value log entries
-
-= 1.0.3 =
-* Add conditional logic
 
 == Upgrade Notice ==
 

@@ -55,21 +55,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	</div>
 
-	<!-- Filters and Search -->
-	<div class="vira-list-filters">
-		<div class="vira-filter-controls">
-			<div class="vira-filter-group">
-				<label for="vira-filter-status"><?php esc_html_e( 'Status:', 'vira-code' ); ?></label>
-				<select id="vira-filter-status" class="vira-filter-select">
+	<!-- Filters, Search and Bulk Actions -->
+	<div class="vira-control-bar">
+		<div class="vira-control-row">
+			<!-- Filter Controls -->
+			<div class="vira-filter-section">
+				<select id="vira-filter-status" class="vira-control-select">
 					<option value=""><?php esc_html_e( 'All Statuses', 'vira-code' ); ?></option>
 					<option value="active"><?php esc_html_e( 'Active', 'vira-code' ); ?></option>
 					<option value="inactive"><?php esc_html_e( 'Inactive', 'vira-code' ); ?></option>
 					<option value="error"><?php esc_html_e( 'Error', 'vira-code' ); ?></option>
 				</select>
-			</div>
-			<div class="vira-filter-group">
-				<label for="vira-filter-type"><?php esc_html_e( 'Type:', 'vira-code' ); ?></label>
-				<select id="vira-filter-type" class="vira-filter-select">
+				<select id="vira-filter-type" class="vira-control-select">
 					<option value=""><?php esc_html_e( 'All Types', 'vira-code' ); ?></option>
 					<?php
 					$snippet_types = \ViraCode\vira_code_snippet_types();
@@ -78,39 +75,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<option value="<?php echo esc_attr( $type ); ?>"><?php echo esc_html( $label ); ?></option>
 					<?php endforeach; ?>
 				</select>
-			</div>
-			<div class="vira-filter-group">
-				<label for="vira-filter-conditional"><?php esc_html_e( 'Conditional Logic:', 'vira-code' ); ?></label>
-				<select id="vira-filter-conditional" class="vira-filter-select">
+				<select id="vira-filter-conditional" class="vira-control-select">
 					<option value=""><?php esc_html_e( 'All Snippets', 'vira-code' ); ?></option>
 					<option value="enabled"><?php esc_html_e( 'With Conditional Logic', 'vira-code' ); ?></option>
 					<option value="disabled"><?php esc_html_e( 'Without Conditional Logic', 'vira-code' ); ?></option>
 				</select>
-			</div>
-			<div class="vira-filter-group">
-				<label for="vira-search-input"><?php esc_html_e( 'Search:', 'vira-code' ); ?></label>
-				<input type="text" id="vira-search-input" class="vira-search-input" placeholder="<?php esc_attr_e( 'Search snippets...', 'vira-code' ); ?>">
-			</div>
-			<div class="vira-filter-group">
+				<input type="text" id="vira-search-input" class="vira-control-input" placeholder="<?php esc_attr_e( 'Search snippets...', 'vira-code' ); ?>">
 				<button type="button" id="vira-clear-filters" class="button"><?php esc_html_e( 'Clear Filters', 'vira-code' ); ?></button>
 			</div>
-		</div>
-		<div class="vira-bulk-actions">
-			<div class="vira-bulk-group">
-				<label for="vira-bulk-select-all">
+			
+			<!-- Bulk Actions -->
+			<div class="vira-bulk-section">
+				<label class="vira-bulk-select-all">
 					<input type="checkbox" id="vira-bulk-select-all">
 					<?php esc_html_e( 'Select All', 'vira-code' ); ?>
 				</label>
-			</div>
-			<div class="vira-bulk-group">
-				<select id="vira-bulk-action" class="vira-bulk-select">
+				<select id="vira-bulk-action" class="vira-control-select">
 					<option value=""><?php esc_html_e( 'Bulk Actions', 'vira-code' ); ?></option>
 					<option value="delete_rules"><?php esc_html_e( 'Delete Conditional Logic Rules', 'vira-code' ); ?></option>
 					<option value="copy_rules"><?php esc_html_e( 'Copy Conditional Logic Rules', 'vira-code' ); ?></option>
 					<option value="export_rules"><?php esc_html_e( 'Export Conditional Logic Rules', 'vira-code' ); ?></option>
 				</select>
-			</div>
-			<div class="vira-bulk-group">
 				<button type="button" id="vira-apply-bulk-action" class="button" disabled><?php esc_html_e( 'Apply', 'vira-code' ); ?></button>
 			</div>
 		</div>
@@ -136,6 +121,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<th class="column-type"><?php esc_html_e( 'Type', 'vira-code' ); ?></th>
 					<th class="column-scope"><?php esc_html_e( 'Scope', 'vira-code' ); ?></th>
 					<th class="column-status"><?php esc_html_e( 'Status', 'vira-code' ); ?></th>
+					<th class="column-storage"><?php esc_html_e( 'Storage', 'vira-code' ); ?></th>
 					<th class="column-conditional"><?php esc_html_e( 'Conditional Logic', 'vira-code' ); ?></th>
 					<th class="column-priority"><?php esc_html_e( 'Priority', 'vira-code' ); ?></th>
 					<th class="column-updated"><?php esc_html_e( 'Last Updated', 'vira-code' ); ?></th>
@@ -200,6 +186,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<span class="dashicons dashicons-warning" title="<?php echo esc_attr( $snippet['error_message'] ); ?>"></span>
 							<?php endif; ?>
 						</td>
+						<td class="column-storage" data-colname="<?php esc_attr_e( 'Storage', 'vira-code' ); ?>">
+							<?php
+							$storage_type = isset( $snippet['storage_type'] ) ? $snippet['storage_type'] : 'database';
+							?>
+							<span class="vira-storage-badge vira-storage-badge-<?php echo esc_attr( $storage_type ); ?>">
+								<?php echo esc_html( ucfirst( $storage_type ) ); ?>
+							</span>
+						</td>
 						<td class="column-conditional" data-colname="<?php esc_attr_e( 'Conditional Logic', 'vira-code' ); ?>">
 							<?php if ( $snippet['conditional_logic_enabled'] ) : ?>
 								<div class="vira-conditional-logic-indicator">
@@ -251,6 +245,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<th class="column-type"><?php esc_html_e( 'Type', 'vira-code' ); ?></th>
 					<th class="column-scope"><?php esc_html_e( 'Scope', 'vira-code' ); ?></th>
 					<th class="column-status"><?php esc_html_e( 'Status', 'vira-code' ); ?></th>
+					<th class="column-storage"><?php esc_html_e( 'Storage', 'vira-code' ); ?></th>
 					<th class="column-conditional"><?php esc_html_e( 'Conditional Logic', 'vira-code' ); ?></th>
 					<th class="column-priority"><?php esc_html_e( 'Priority', 'vira-code' ); ?></th>
 					<th class="column-updated"><?php esc_html_e( 'Last Updated', 'vira-code' ); ?></th>

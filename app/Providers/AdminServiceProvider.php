@@ -294,6 +294,10 @@ class AdminServiceProvider extends ServiceProvider
             $this->app->adminController,
             "testConditionalLogic",
         ]);
+        add_action("wp_ajax_vira_code_get_library_cleanup_info", [
+            $this->app->adminController,
+            "getLibraryCleanupInfo",
+        ]);
     }
 
     /**
